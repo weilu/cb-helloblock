@@ -115,7 +115,7 @@ function Transactions(url) {
 }
 
 Transactions.prototype.get = function(txids, callback) {
-  var query = 'transactions?txHashes=' + txids.join('&txHashes=')
+  var query = '?txHashes=' + txids.join('&txHashes=')
 
   request.get({
     url: this.url + query,
@@ -128,7 +128,7 @@ Transactions.prototype.get = function(txids, callback) {
 Transactions.prototype.propagate = function(transactions, callback) {
   transactions.forEach(function(txHex) {
     request.post({
-      url: this.url + 'transactions',
+      url: this.url,
       json: true,
       form: {
         rawTxHex: txHex

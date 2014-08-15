@@ -37,6 +37,7 @@ describe('Blockchain API', function() {
 
           results.forEach(function(result) {
             assert(result.match(/^[0-9a-f]+$/i))
+            assert(result.length >= 20)
           })
 
           done()
@@ -63,13 +64,25 @@ describe('Blockchain API', function() {
     })
   })
 
-  describe.skip('Transactions', function() {
-    describe('Get', function() {
+  describe('Transactions', function() {
+    describe.only('Get', function() {
+      it('returns sane results', function(done) {
+        blockchain.transactions.get(fixtures.transactions, function(err, results) {
+          assert.ifError(err)
 
+          results.forEach(function(result, i) {
+            assert(result.match(/^[0-9a-f]+$/i))
+            assert(result.length >= 20)
+          })
+
+          done()
+        })
+      })
     })
 
-    describe('Propagate', function() {
-
+    describe.skip('Propagate', function() {
+      it('returns sane results', function(done) {
+      })
     })
   })
 })
