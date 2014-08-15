@@ -15,14 +15,14 @@ function parseHBTx(transaction) {
   tx.locktime = transaction.locktime
   tx.version = transaction.version
 
-  transaction.inputs.forEach(function(txin) {
+  transaction.inputs.forEach(function(txin, i) {
     var index = txin.prevTxoutIndex
     var script = bitcoinjs.Script.fromHex(txin.scriptSig)
     var sequence = txin.sequence
     var txid = txin.prevTxHash
 
     tx.addInput(txid, index, sequence)
-    tx.setInputScript(index, script)
+    tx.setInputScript(i, script)
   })
 
   transaction.outputs.forEach(function(txout) {
