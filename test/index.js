@@ -53,7 +53,7 @@ describe('Blockchain API', function() {
             assert(result.confirmations > 0)
             assert(result.index >= 0)
             assert(result.script !== '')
-            assert(result.txHash !== '')
+            assert(result.txId !== '')
             assert(result.value > 0)
           })
 

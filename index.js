@@ -103,7 +103,7 @@ Addresses.prototype.unspents = function(addresses, offset, callback) {
         confirmations: unspent.confirmations,
         index: unspent.index,
         script: unspent.scriptPubKey,
-        txHash: unspent.txHash,
+        txId: unspent.txHash,
         value: unspent.value
       }
     })
