@@ -4,6 +4,8 @@ var fixtures = require('./fixtures').testnet
 var Blockchain = require('../index.js')
 
 describe('Blockchain API', function() {
+  this.timeout(5000)
+
   var blockchain
 
   beforeEach(function() {
