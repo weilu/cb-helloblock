@@ -41,8 +41,8 @@ function asdf(parse, callback) {
       assertJSend(body)
 
       callback(undefined, parse(body.data))
-    } catch (e) {
-      callback(err)
+    } catch (exception) {
+      callback(exception)
     }
   }
 }
