@@ -50,8 +50,8 @@ function asdf(parse, callback) {
 function Helloblock(network) {
   this.url = 'https://' + network + '.helloblock.io/v1/'
 
-  this.addresses = new Addresses(this.url)
-  this.transactions = new Transactions(this.url)
+  this.addresses = new Addresses(this.url + 'addresses')
+  this.transactions = new Transactions(this.url + 'transactions')
 }
 
 function Addresses(url) {
@@ -59,7 +59,7 @@ function Addresses(url) {
 }
 
 Addresses.prototype.get = function(addresses, callback) {
-  var query = 'addresses?addresses=' + addresses.join('&addresses=')
+  var query = '?addresses=' + addresses.join('&addresses=')
 
   request.get({
     url: this.url + query,
@@ -77,7 +77,7 @@ Addresses.prototype.get = function(addresses, callback) {
 }
 
 Addresses.prototype.transactions = function(addresses, offset, callback) {
-  var list = 'transactions?addresses=' + addresses.join('&addresses=')
+  var list = '/transactions?addresses=' + addresses.join('&addresses=')
   var pagination = '&limit=50' + '&offset=' + offset
   var query = list + pagination
 
@@ -90,7 +90,7 @@ Addresses.prototype.transactions = function(addresses, offset, callback) {
 }
 
 Addresses.prototype.unspents = function(addresses, offset, callback) {
-  var list = 'unspents?addresses=' + addresses.join('&addresses=')
+  var list = '/unspents?addresses=' + addresses.join('&addresses=')
   var pagination = '&limit=50' + '&offset=' + offset
   var query = list + pagination
 
