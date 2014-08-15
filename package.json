@@ -2,7 +2,7 @@
   "name": "common-blockchain-helloblock",
   "version": "0.0.0",
   "description": "cb-helloblock",
-  "main": "lib/index.js",
+  "main": "./src/index.js",
   "scripts": {
     "coverage": "istanbul cover _mocha -- test/*.js",
     "jshint": "jshint --config jshint.json src/*.js ; true",

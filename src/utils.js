@@ -1,3 +1,6 @@
+var assert = require('assert')
+var bitcoinjs = require('bitcoinjs-lib')
+
 function assertJSend(body) {
   assert.notEqual(body.status, 'error', body.message || 'Invalid JSend response:' + JSON.stringify(body))
   assert.notEqual(body.status, 'fail', body.data || 'Invalid JSend response: ' + JSON.stringify(body))
