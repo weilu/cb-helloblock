@@ -1,7 +1,7 @@
 var assert = require('assert')
 var fixtures = require('./fixtures').testnet
 
-var Blockchain = require('../index.js')
+var Blockchain = require('../lib/index.js')
 
 describe('Blockchain API', function() {
   this.timeout(5000)
