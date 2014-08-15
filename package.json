@@ -1,7 +1,7 @@
 {
   "name": "common-blockchain-helloblock",
   "version": "0.0.0",
-  "description": "cb-helloblock", 
+  "description": "cb-helloblock",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/dcousens/cb-helloblock/issues"
   },
-  "homepage": "https://github.com/dcousens/cb-helloblock"
+  "homepage": "https://github.com/dcousens/cb-helloblock",
+  "dependencies": {
+    "bitcoinjs-lib": "^1.0.2",
+    "request": "^2.40.0"
+  }
 }
