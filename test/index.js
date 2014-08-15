@@ -10,16 +10,13 @@ describe('Blockchain API', function() {
 
   beforeEach(function() {
     blockchain = new Blockchain('testnet')
-    console.log(blockchain)
   })
 
   describe('Addresses', function() {
-    describe.only('Get', function() {
+    describe('Get', function() {
       it('returns sane results', function(done) {
         blockchain.addresses.get(fixtures.addresses, function(err, results) {
           assert.ifError(err)
-
-          console.log(results)
 
           results.forEach(function(result, i) {
             assert(result.address, fixtures.addresses[i])
@@ -35,10 +32,8 @@ describe('Blockchain API', function() {
 
     describe('Transactions', function() {
       it('returns sane results', function(done) {
-        blockchain.addresses.transactions(fixtures.addresses, function(err, results) {
+        blockchain.addresses.transactions(fixtures.addresses, 0, function(err, results) {
           assert.ifError(err)
-
-          console.log(results)
 
           results.forEach(function(result) {
             assert(result.match(/^[0-9a-f]+$/i))
@@ -51,14 +46,18 @@ describe('Blockchain API', function() {
 
     describe('Unspents', function() {
       it('returns sane results', function(done) {
-        blockchain.addresses.unspents(fixtures.addresses, function(err, results) {
+        blockchain.addresses.unspents(fixtures.addresses, 0, function(err, results) {
           assert.ifError(err)
 
-          console.log(results)
-
           results.forEach(function(result) {
-            assert(result.match(/^[0-9a-f]+$/i))
+            assert(result.confirmations > 0)
+            assert(result.index >= 0)
+            assert(result.script !== '')
+            assert(result.txHash !== '')
+            assert(result.value > 0)
           })
+
+          done()
         })
       })
     })
