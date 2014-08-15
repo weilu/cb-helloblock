@@ -1,0 +1,19 @@
+{
+  "name": "common-blockchain-helloblock",
+  "version": "0.0.0",
+  "description": "cb-helloblock", 
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dcousens/cb-helloblock.git"
+  },
+  "author": "Daniel Cousens",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dcousens/cb-helloblock/issues"
+  },
+  "homepage": "https://github.com/dcousens/cb-helloblock"
+}
