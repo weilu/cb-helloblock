@@ -1,4 +1,5 @@
 var assert = require('assert')
+var bitcoinjs = require('bitcoinjs-lib')
 var request = require('request')
 
 function assertJSend(body) {
@@ -9,7 +10,7 @@ function assertJSend(body) {
   assert.notEqual(body.data, undefined, 'Unexpected JSend response: ' + body)
 }
 
-function parseHBTx(hbTx) {
+function parseHBTx(transaction) {
   var tx = new bitcoinjs.Transaction()
   tx.locktime = transaction.locktime
   tx.version = transaction.version
@@ -25,7 +26,7 @@ function parseHBTx(hbTx) {
   })
 
   transaction.outputs.forEach(function(txout) {
-    var script = new bitcoinjs.Script(txin.scriptPubKey)
+    var script = new bitcoinjs.Script(txout.scriptPubKey)
     tx.addOutput(script, txout.value)
   })
 
@@ -52,9 +53,7 @@ function Helloblock(network) {
 
 Helloblock.prototype.addresses = {}
 Helloblock.prototype.addresses.get = function(addresses, callback) {
-  var list= 'addresses&addresses=' + addresses.join('&addresses=')
-  var pagination = '&limit=50' + '&offset=' + offset
-  var query = list + pagination
+  var query = 'addresses&addresses=' + addresses.join('&addresses=')
 
   request.get({
     url: this.url + query,
@@ -103,11 +102,11 @@ Helloblock.prototype.addresses.unspents = function(addresses, offset, callback) 
       }
     })
   }, callback))
-})
+}
 
 Helloblock.prototype.transactions = {}
 Helloblock.prototype.transactions.get = function(txids, callback) {
-  var query = 'transactions&txHashes=' + addresses.join('&txHashes=')
+  var query = 'transactions&txHashes=' + txids.join('&txHashes=')
 
   request.get({
     url: this.url + query,
