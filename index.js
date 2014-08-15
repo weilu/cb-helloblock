@@ -49,10 +49,16 @@ function asdf(parse, callback) {
 
 function Helloblock(network) {
   this.url = 'https://' + network + '.helloblock.io/v1/'
+
+  this.addresses = new Addresses(this.url)
+  this.transactions = new Transactions(this.url)
 }
 
-Helloblock.prototype.addresses = {}
-Helloblock.prototype.addresses.get = function(addresses, callback) {
+function Addresses(url) {
+  this.url = url
+}
+
+Addresses.prototype.get = function(addresses, callback) {
   var query = 'addresses&addresses=' + addresses.join('&addresses=')
 
   request.get({
@@ -63,14 +69,14 @@ Helloblock.prototype.addresses.get = function(addresses, callback) {
       return {
         address: address.address,
         balance: address.balance,
-        total_received: address.totalReceivedValue,
-        tx_count: address.txsCount
+        totalReceived: address.totalReceivedValue,
+        txCount: address.txsCount
       }
     })
   }, callback))
 }
 
-Helloblock.prototype.addresses.transactions = function(addresses, offset, callback) {
+Addresses.prototype.transactions = function(addresses, offset, callback) {
   var list = 'transactions&addresses=' + addresses.join('&addresses=')
   var pagination = '&limit=50' + '&offset=' + offset
   var query = list + pagination
@@ -83,7 +89,7 @@ Helloblock.prototype.addresses.transactions = function(addresses, offset, callba
   }, callback))
 }
 
-Helloblock.prototype.addresses.unspents = function(addresses, offset, callback) {
+Addresses.prototype.unspents = function(addresses, offset, callback) {
   var list = 'unspents&addresses=' + addresses.join('&addresses=')
   var pagination = '&limit=50' + '&offset=' + offset
   var query = list + pagination
@@ -97,26 +103,29 @@ Helloblock.prototype.addresses.unspents = function(addresses, offset, callback) 
         confirmations: unspent.confirmations,
         index: unspent.index,
         script: unspent.scriptPubKey,
-        tx_hash: unspent.txHash,
+        txHash: unspent.txHash,
         value: unspent.value
       }
     })
   }, callback))
 }
 
-Helloblock.prototype.transactions = {}
-Helloblock.prototype.transactions.get = function(txids, callback) {
+function Transactions(url) {
+  this.url = url
+}
+
+Transactions.prototype.get = function(txids, callback) {
   var query = 'transactions&txHashes=' + txids.join('&txHashes=')
 
   request.get({
     url: this.url + query,
     json: true,
   }, asdf(function(data) {
-      return data.transactions.map(parseHBTx)
+    return data.transactions.map(parseHBTx)
   }, callback))
 }
 
-Helloblock.prototype.transactions.propagate = function(transactions, callback) {
+Transactions.prototype.propagate = function(transactions, callback) {
   transactions.forEach(function(txHex) {
     request.post({
       url: this.url + 'transactions',
