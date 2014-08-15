@@ -34,13 +34,13 @@ function parseHBTx(transaction) {
 }
 
 function asdf(parse, callback) {
-  return function(err, res) {
+  return function(err, response, body) {
     if (err) return callback(err)
 
     try {
-      assertJSend(res.body)
+      assertJSend(body)
 
-      callback(undefined, parse(res.body.data))
+      callback(undefined, parse(body.data))
     } catch (e) {
       callback(err)
     }
@@ -59,7 +59,7 @@ function Addresses(url) {
 }
 
 Addresses.prototype.get = function(addresses, callback) {
-  var query = 'addresses&addresses=' + addresses.join('&addresses=')
+  var query = 'addresses?addresses=' + addresses.join('&addresses=')
 
   request.get({
     url: this.url + query,
@@ -77,7 +77,7 @@ Addresses.prototype.get = function(addresses, callback) {
 }
 
 Addresses.prototype.transactions = function(addresses, offset, callback) {
-  var list = 'transactions&addresses=' + addresses.join('&addresses=')
+  var list = 'transactions?addresses=' + addresses.join('&addresses=')
   var pagination = '&limit=50' + '&offset=' + offset
   var query = list + pagination
 
@@ -90,7 +90,7 @@ Addresses.prototype.transactions = function(addresses, offset, callback) {
 }
 
 Addresses.prototype.unspents = function(addresses, offset, callback) {
-  var list = 'unspents&addresses=' + addresses.join('&addresses=')
+  var list = 'unspents?addresses=' + addresses.join('&addresses=')
   var pagination = '&limit=50' + '&offset=' + offset
   var query = list + pagination
 
@@ -115,7 +115,7 @@ function Transactions(url) {
 }
 
 Transactions.prototype.get = function(txids, callback) {
-  var query = 'transactions&txHashes=' + txids.join('&txHashes=')
+  var query = 'transactions?txHashes=' + txids.join('&txHashes=')
 
   request.get({
     url: this.url + query,
