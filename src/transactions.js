@@ -12,7 +12,7 @@ Transactions.prototype.get = function(txids, callback) {
     url: this.url + query,
     json: true,
   }, utils.handleJSend(function(data) {
-    return data.transactions.map(utils.parseHBTransactions)
+    return data.transactions.map(utils.parseHBTransaction)
   }, callback))
 }
 
