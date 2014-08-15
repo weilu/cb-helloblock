@@ -17,7 +17,7 @@ function parseHBTx(transaction) {
 
   transaction.inputs.forEach(function(txin) {
     var index = txin.prevTxoutIndex
-    var script = new bitcoinjs.Script(txin.scriptSig)
+    var script = bitcoinjs.Script.fromHex(txin.scriptSig)
     var sequence = txin.sequence
     var txid = txin.prevTxHash
 
@@ -26,7 +26,7 @@ function parseHBTx(transaction) {
   })
 
   transaction.outputs.forEach(function(txout) {
-    var script = new bitcoinjs.Script(txout.scriptPubKey)
+    var script = bitcoinjs.Script.fromHex(txout.scriptPubKey)
     tx.addOutput(script, txout.value)
   })
 
