@@ -65,7 +65,7 @@ describe('Blockchain API', function() {
   })
 
   describe('Transactions', function() {
-    describe.only('Get', function() {
+    describe('Get', function() {
       it('returns sane results', function(done) {
         blockchain.transactions.get(fixtures.transactions, function(err, results) {
           assert.ifError(err)
