@@ -27,7 +27,7 @@ Transactions.prototype.propagate = function(transactions, callback) {
     }, utils.handleJSend(function() {
       return undefined
     }, callback))
-  })
+  }, this)
 }
 
 module.exports = Transactions
