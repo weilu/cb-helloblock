@@ -131,14 +131,13 @@ describe('Blockchain API', function() {
 
       it('supports n > 1 batch sizes', function(done) {
         var txids = fixtures.transactions.map(function(f) { return f.txid })
-        var hexs = fixtures.transactions.map(function(f) { return f.hex })
 
         blockchain.transactions.get(txids, function(err, results) {
           assert.ifError(err)
 
           assert.equal(results.length, fixtures.transactions.length)
-          results.forEach(function(result, i) {
-            assert.notEqual(hexs.indexOf(result), -1, result + ' not found')
+          fixtures.transactions.forEach(function(expected) {
+            assert.notEqual(results.indexOf(expected.hex), -1, expected.hex + ' not found')
           })
 
           done()
