@@ -1,7 +1,7 @@
 {
-  "name": "common-blockchain-helloblock",
+  "name": "cb-helloblock",
   "version": "0.0.0",
-  "description": "cb-helloblock",
+  "description": "common-blockchain-helloblock",
   "main": "./src/index.js",
   "scripts": {
     "coverage": "istanbul cover _mocha -- test/*.js",
