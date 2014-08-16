@@ -9,17 +9,20 @@ function assertJSend(body) {
   assert.notEqual(body.data, undefined, 'Unexpected JSend response: ' + body)
 }
 
-function handleJSend(parse, callback) {
+function handleJSend(handle, callback) {
   return function(err, response, body) {
     if (err) return callback(err)
 
+    var result
     try {
       assertJSend(body)
 
-      callback(undefined, parse(body.data))
+      result = handle(body.data)
     } catch (exception) {
-      callback(exception)
+      return callback(exception)
     }
+
+    callback(undefined, result)
   }
 }
 
