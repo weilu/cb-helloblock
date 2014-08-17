@@ -20,18 +20,15 @@ Transactions.prototype.propagate = function(transactions, callback) {
   var waitingFor = transactions.length
 
   function waitForAll(err) {
-    if (err) {
-      callback(err)
-      callback = undefined
-
-      return
-    }
-
     if (callback) {
       waitingFor--
 
-      if (waitingFor === 0) {
-        return callback(undefined)
+      if (err) {
+        callback(err)
+        callback = undefined
+
+      } else if (waitingFor === 0) {
+        callback()
       }
     }
   }
