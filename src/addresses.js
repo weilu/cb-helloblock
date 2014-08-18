@@ -47,9 +47,9 @@ Addresses.prototype.unspents = function(addresses, offset, callback) {
   }, utils.handleJSend(function(data) {
     return data.unspents.map(function(unspent) {
       return {
+        address: unspent.address,
         confirmations: unspent.confirmations,
         index: unspent.index,
-        script: unspent.scriptPubKey,
         txId: unspent.txHash,
         value: unspent.value
       }
