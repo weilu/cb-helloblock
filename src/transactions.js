@@ -17,6 +17,10 @@ Transactions.prototype.get = function(txids, callback) {
 }
 
 Transactions.prototype.propagate = function(transactions, callback) {
+  if(!Array.isArray(transactions)) {
+    transactions = [transactions]
+  }
+
   var waitingFor = transactions.length
 
   function waitForAll(err) {
