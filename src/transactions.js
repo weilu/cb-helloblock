@@ -6,6 +6,10 @@ function Transactions(url) {
 }
 
 Transactions.prototype.get = function(txids, callback) {
+  if(!Array.isArray(txids)) {
+    txids = [txids]
+  }
+
   var query = '?txHashes=' + txids.join('&txHashes=')
 
   request.get({

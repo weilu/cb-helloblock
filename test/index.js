@@ -18,7 +18,7 @@ describe('Blockchain API', function() {
     describe('Get', function() {
       fixtures.addresses.forEach(function(f) {
         it('returns summary for ' + f + ' correctly', function(done) {
-          blockchain.addresses.get([f], function(err, results) {
+          blockchain.addresses.get(f, function(err, results) {
             assert.ifError(err)
 
             results.forEach(function(result) {
@@ -49,7 +49,7 @@ describe('Blockchain API', function() {
 
     describe('Transactions', function() {
       it('returns sane results', function(done) {
-        blockchain.addresses.transactions(fixtures.addresses, 0, function(err, results) {
+        blockchain.addresses.transactions(fixtures.addresses[0], 0, function(err, results) {
           assert.ifError(err)
 
           results.forEach(function(result) {
@@ -78,9 +78,7 @@ describe('Blockchain API', function() {
 
     describe('Unspents', function() {
       it('returns sane results', function(done) {
-        var txids = fixtures.transactions.map(function(f) { return f.txid })
-
-        blockchain.addresses.unspents(fixtures.addresses, 0, function(err, results) {
+        blockchain.addresses.unspents(fixtures.addresses[0], 0, function(err, results) {
           assert.ifError(err)
 
           results.forEach(function(result) {
@@ -119,7 +117,7 @@ describe('Blockchain API', function() {
     describe('Get', function() {
       fixtures.transactions.forEach(function(f) {
         it('returns and parses ' + f.txid + ' correctly', function(done) {
-          blockchain.transactions.get([f.txid], function(err, results) {
+          blockchain.transactions.get(f.txid, function(err, results) {
             assert.ifError(err)
 
             results.forEach(function(result) {
