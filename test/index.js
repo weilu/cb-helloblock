@@ -53,8 +53,9 @@ describe('Blockchain API', function() {
           assert.ifError(err)
 
           results.forEach(function(result) {
-            assert(result.match(/^[0-9a-f]+$/i))
-            assert(result.length >= 20)
+            assert(result.hex.match(/^[0-9a-f]+$/i))
+            assert(result.hex.length >= 20)
+            assert.equal(typeof result.confirmations, 'number')
           })
 
           done()
@@ -67,8 +68,9 @@ describe('Blockchain API', function() {
         blockchain.addresses.transactions(fixtures.addresses, 0, function(err, results) {
           assert.ifError(err)
 
+          var actualHexs = results.map(function(tx) { return tx.hex })
           hexs.forEach(function(hex) {
-            assert.notEqual(results.indexOf(hex), -1, hex + ' not found')
+            assert.notEqual(actualHexs.indexOf(hex), -1, hex + ' not found')
           })
 
           done()
@@ -123,7 +125,8 @@ describe('Blockchain API', function() {
             assert.ifError(err)
 
             results.forEach(function(result) {
-              assert.equal(result, f.hex)
+              assert.equal(result.hex, f.hex)
+              assert.equal(typeof result.confirmations, 'number')
             })
 
             done()
@@ -138,8 +141,10 @@ describe('Blockchain API', function() {
           assert.ifError(err)
 
           assert.equal(results.length, fixtures.transactions.length)
+
+          var actualHexs = results.map(function(tx) { return tx.hex })
           fixtures.transactions.forEach(function(expected) {
-            assert.notEqual(results.indexOf(expected.hex), -1, expected.hex + ' not found')
+            assert.notEqual(actualHexs.indexOf(expected.hex), -1, expected.hex + ' not found')
           })
 
           done()
