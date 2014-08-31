@@ -1,4 +1,4 @@
-var request = require('request')
+var request = require('superagent')
 var utils = require('./utils')
 
 function Addresses(url) {
@@ -12,10 +12,9 @@ Addresses.prototype.get = function(addresses, callback) {
 
   var query = '?addresses=' + addresses.join('&addresses=')
 
-  request.get({
-    url: this.url + query,
-    json: true
-  }, utils.handleJSend(function(data) {
+  request
+  .get(this.url + query)
+  .end(utils.handleJSend(function(data) {
     return data.addresses.map(function(address) {
       return {
         address: address.address,
@@ -36,10 +35,9 @@ Addresses.prototype.transactions = function(addresses, offset, callback) {
   var pagination = '&limit=50' + '&offset=' + offset
   var query = list + pagination
 
-  request.get({
-    url: this.url + query,
-    json: true
-  }, utils.handleJSend(function(data) {
+  request
+  .get(this.url + query)
+  .end(utils.handleJSend(function(data) {
     return data.transactions.map(utils.parseHBTransaction)
   }, callback))
 }
@@ -53,10 +51,9 @@ Addresses.prototype.unspents = function(addresses, offset, callback) {
   var pagination = '&limit=50' + '&offset=' + offset
   var query = list + pagination
 
-  request.get({
-    url: this.url + query,
-    json: true
-  }, utils.handleJSend(function(data) {
+  request
+  .get(this.url + query)
+  .end(utils.handleJSend(function(data) {
     return data.unspents.map(function(unspent) {
       return {
         address: unspent.address,

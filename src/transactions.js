@@ -1,4 +1,4 @@
-var request = require('request')
+var request = require('superagent')
 var utils = require('./utils')
 
 function Transactions(url) {
@@ -12,10 +12,9 @@ Transactions.prototype.get = function(txids, callback) {
 
   var query = '?txHashes=' + txids.join('&txHashes=')
 
-  request.get({
-    url: this.url + query,
-    json: true,
-  }, utils.handleJSend(function(data) {
+  request
+  .get(this.url + query)
+  .end(utils.handleJSend(function(data) {
     return data.transactions.map(utils.parseHBTransaction)
   }, callback))
 }
@@ -25,32 +24,15 @@ Transactions.prototype.propagate = function(transactions, callback) {
     transactions = [transactions]
   }
 
-  var waitingFor = transactions.length
-
-  function waitForAll(err) {
-    if (callback) {
-      waitingFor--
-
-      if (err) {
-        callback(err)
-        callback = undefined
-
-      } else if (waitingFor === 0) {
-        callback()
-      }
-    }
-  }
+  var done = utils.waitForAll(transactions.length, callback)
 
   transactions.forEach(function(txHex) {
-    request.post({
-      url: this.url,
-      json: true,
-      form: {
-        rawTxHex: txHex
-      }
-    }, utils.handleJSend(function() {
+    request
+    .post(this.url)
+    .send({ rawTxHex: txHex })
+    .end(utils.handleJSend(function() {
       return undefined
-    }, waitForAll))
+    }, done))
   }, this)
 }
 

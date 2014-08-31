@@ -1,12 +1,12 @@
 var assert = require('assert')
 var bitcoinjs = require('bitcoinjs-lib')
 var fixtures = require('./fixtures').testnet
-var request = require('request')
+var request = require('superagent')
 
 var Blockchain = require('../src/index.js')
 
 describe('Blockchain API', function() {
-  this.timeout(8000)
+  this.timeout(20000)
 
   var blockchain
 
@@ -82,7 +82,9 @@ describe('Blockchain API', function() {
       })
 
       it('includes zero-confirmation transactions', function(done) {
-        createTxsFromUnspents(1, function(txs, addresses) {
+        requestNewUnspents(1, function(err, txs, addresses) {
+          assert.ifError(err)
+
           var address = addresses[0]
           var tx = txs[0]
 
@@ -185,52 +187,58 @@ describe('Blockchain API', function() {
 
     describe('Propagate', function() {
       it('propagates a single Transaction', function(done){
-        createTxsFromUnspents(1, function(txs) {
+        requestNewUnspents(1, function(err, txs) {
+          assert.ifError(err)
+
           blockchain.transactions.propagate(txs[0], function(err) {
             assert.ifError(err)
+
             done()
           })
         })
       })
 
       it('supports n > 1 batch sizes', function(done) {
-        createTxsFromUnspents(3, function(txs) {
+        requestNewUnspents(3, function(err, txs) {
+          assert.ifError(err)
+
           blockchain.transactions.propagate(txs, function(err) {
             assert.ifError(err)
+
             done()
           })
         })
       })
     })
   })
-
-  function createTxsFromUnspents(n, callback) {
-    request.get({
-      url: "https://testnet.helloblock.io/v1/faucet?type=" + n,
-      json: true
-    }, function(err, res, body) {
-      assert.ifError(err)
-
-      var unspents = body.data.unspents
-      assert.equal(unspents.length, n)
-
-      var wif = body.data.privateKeyWIF
-      var privKey = bitcoinjs.ECKey.fromWIF(wif)
-
-      var txs = unspents.map(function(utxo) {
-        var tx = new bitcoinjs.Transaction()
-        tx.addInput(utxo.txHash, utxo.index)
-        tx.addOutput(utxo.address, utxo.value)
-        tx.sign(0, privKey)
-        return tx.toHex()
-      })
-
-      var addresses = unspents.map(function(utxo) {
-        return utxo.address
-      })
-
-      callback(txs, addresses)
-    })
-  }
 })
 
+function requestNewUnspents(amount, callback) {
+  assert(amount > 0, 'Minimum amount is 1')
+  assert(amount <= 3, 'Maximum amount is 3')
+  amount = Math.round(amount)
+
+  request
+  .get('https://testnet.helloblock.io/v1/faucet?type=' + amount)
+  .end(function(err, res) {
+    if (err) return callback(err)
+
+    var privKey = bitcoinjs.ECKey.fromWIF(res.body.data.privateKeyWIF)
+    var txs = res.body.data.unspents.map(function(utxo) {
+      var tx = new bitcoinjs.Transaction()
+      tx.addInput(utxo.txHash, utxo.index)
+      tx.addOutput(utxo.address, utxo.value)
+      tx.sign(0, privKey)
+
+      return tx.toHex()
+    })
+
+    var addresses = res.body.data.unspents.map(function(utxo) {
+      return utxo.address
+    })
+
+    if (txs.length !== amount) return callback(new Error('txs.length !== amount'))
+
+    callback(undefined, txs, addresses)
+  })
+}

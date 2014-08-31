@@ -1,28 +1,37 @@
 var assert = require('assert')
 var bitcoinjs = require('bitcoinjs-lib')
-
-function assertJSend(body) {
-  assert.notEqual(body.status, 'error', body.message || 'Invalid JSend response:' + JSON.stringify(body))
-  assert.notEqual(body.status, 'fail', body.data || 'Invalid JSend response: ' + JSON.stringify(body))
-
-  assert.equal(body.status, 'success', 'Unexpected JSend response: ' + body)
-  assert.notEqual(body.data, undefined, 'Unexpected JSend response: ' + body)
-}
+var jsend = require('jsend')
 
 function handleJSend(handle, callback) {
-  return function(err, response, body) {
+  return function(err, res) {
     if (err) return callback(err)
 
     var result
     try {
-      assertJSend(body)
+      assert(jsend.isValid(res.body))
 
-      result = handle(body.data)
+      result = handle(res.body.data)
     } catch (exception) {
       return callback(exception)
     }
 
     callback(undefined, result)
+  }
+}
+
+function waitForAll(count, callback) {
+  return function maybeDone(err) {
+    if (callback) {
+      count--
+
+      if (err) {
+        callback(err)
+        callback = undefined
+
+      } else if (count === 0) {
+        callback()
+      }
+    }
   }
 }
 
@@ -52,4 +61,5 @@ function parseHBTransaction(transaction) {
 module.exports = {
   handleJSend: handleJSend,
   parseHBTransaction: parseHBTransaction,
+  waitForAll: waitForAll
 }
