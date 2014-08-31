@@ -6,6 +6,10 @@ function Addresses(url) {
 }
 
 Addresses.prototype.get = function(addresses, callback) {
+  if(!Array.isArray(addresses)) {
+    addresses = [addresses]
+  }
+
   var query = '?addresses=' + addresses.join('&addresses=')
 
   request.get({
@@ -24,6 +28,10 @@ Addresses.prototype.get = function(addresses, callback) {
 }
 
 Addresses.prototype.transactions = function(addresses, offset, callback) {
+  if(!Array.isArray(addresses)) {
+    addresses = [addresses]
+  }
+
   var list = '/transactions?addresses=' + addresses.join('&addresses=')
   var pagination = '&limit=50' + '&offset=' + offset
   var query = list + pagination
@@ -37,6 +45,10 @@ Addresses.prototype.transactions = function(addresses, offset, callback) {
 }
 
 Addresses.prototype.unspents = function(addresses, offset, callback) {
+  if(!Array.isArray(addresses)) {
+    addresses = [addresses]
+  }
+
   var list = '/unspents?addresses=' + addresses.join('&addresses=')
   var pagination = '&limit=50' + '&offset=' + offset
   var query = list + pagination

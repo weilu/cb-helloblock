@@ -6,6 +6,10 @@ function Transactions(url) {
 }
 
 Transactions.prototype.get = function(txids, callback) {
+  if(!Array.isArray(txids)) {
+    txids = [txids]
+  }
+
   var query = '?txHashes=' + txids.join('&txHashes=')
 
   request.get({
@@ -17,6 +21,10 @@ Transactions.prototype.get = function(txids, callback) {
 }
 
 Transactions.prototype.propagate = function(transactions, callback) {
+  if(!Array.isArray(transactions)) {
+    transactions = [transactions]
+  }
+
   var waitingFor = transactions.length
 
   function waitForAll(err) {
