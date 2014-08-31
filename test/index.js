@@ -74,18 +74,31 @@ describe('Blockchain API', function() {
         })
       })
 
-      it('works when there are many addresses', function(done) {
-        var addresses = fixtures.addresses.concat(fixtures.more_addresses).concat(fixtures.even_more_addresses)
-        blockchain.addresses.transactions(addresses, 0, function(err, results) {
+      it('works when there are many transactions', function(done) {
+        blockchain.addresses.transactions(fixtures.addresses.concat(fixtures.more_addresses).concat(fixtures.even_more_addresses), 0, function(err, results) {
           assert.ifError(err)
           done()
         })
       })
 
-      it('works when there are many transactions', function(done) {
-        blockchain.addresses.transactions(fixtures.addresses.concat(fixtures.more_addresses), 0, function(err, results) {
-          assert.ifError(err)
-          done()
+      it('includes zero-confirmation transactions', function(done) {
+        createTxsFromUnspents(1, function(txs, addresses) {
+          var address = addresses[0]
+          var tx = txs[0]
+
+          blockchain.transactions.propagate(tx, function(err) {
+            assert.ifError(err)
+
+            blockchain.addresses.transactions(address, 0, function(err, results) {
+              assert.ifError(err)
+
+              var txid = bitcoinjs.Transaction.fromHex(tx).getId()
+              var actualHexs = results.map(function(tx) { return tx.hex })
+              assert(actualHexs.indexOf(tx) > -1, "expect `addresses.transactions('" + address + "')` to include zero-confirmation transaction with id " + txid)
+
+              done()
+            })
+          })
         })
       })
     })
