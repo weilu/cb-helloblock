@@ -24,7 +24,7 @@ Common blockchain wrapper for helloblock.io
 
 #### Addresses.Transactions
 
-Returns a list of transaction summaries related to this Address (as an input or output) filtered by a minimum block height.
+Returns a array of transaction summaries related to this Address (as an input or output) filtered by a minimum block height.
 
 **Parameters**: filter by minimum blockHeight
 
@@ -42,7 +42,7 @@ Returns a list of transaction summaries related to this Address (as an input or 
 
 #### Addresses.Unspents
 
-Returns a list of transaction summaries combined with the vout, amount and related address.
+Returns a array of transaction summaries combined with the vout, amount and related address.
 
 ``` javascript
 [
@@ -126,7 +126,7 @@ No response
 
 #### Blocks.Transactions
 
-Returns a list of transaction summaries for each transaction in the block(s).
+Returns a array of transaction summaries for each transaction in the block(s).
 
 ``` javascript
 [
