@@ -63,7 +63,6 @@ Returns a list of transaction summaries combined with the vout, amount and relat
 
 #### Transactions.Summary
 
-
 ``` javascript
 [
 	{
@@ -114,6 +113,7 @@ No response
 ]
 ```
 
+
 #### Blocks.Get
 
 ``` javascript
@@ -122,6 +122,7 @@ No response
 	...
 ]
 ```
+
 
 #### Blocks.Transactions
 
