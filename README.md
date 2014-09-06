@@ -136,6 +136,24 @@ No response
 ```
 
 
+#### Blocks.Latest
+
+Returns the latest block (subjective to the node)
+
+``` javascript
+{
+  blockHash: "00000000000000001b701ecd0cf2b7a7742a320e9a06a506227ee345b5735d13",
+  merkleRootHash: "82203172bab3f9b90543e98eef4acdf5ab9daf3b6df80806092f9715fe72ba63",
+  prevBlockHash: "000000000025896a3409c57493aa7020a4cc24232a8ee9da10cbe857953d27bd",
+  nonce: 4210027488,
+  blockHeight: 318573,
+  blockTime: 1382046624,
+  blockSize: 456643328,
+  txCount: 3
+}
+```
+
+
 #### Blocks.Transactions
 
 **Parameters:** Array of block hashs and/or block heights
