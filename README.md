@@ -9,6 +9,8 @@ Common blockchain wrapper for helloblock.io
 
 #### Addresses.Summary
 
+**Parameters**: Array of addresses
+
 ``` javascript
 [
 	{
@@ -24,9 +26,9 @@ Common blockchain wrapper for helloblock.io
 
 #### Addresses.Transactions
 
-Returns a array of transaction summaries related to this Address (as an input or output) filtered by a minimum block height.
+**Parameters**: Array of addresses, minimum block height
 
-**Parameters**: filter by minimum blockHeight
+Returns a array of transaction summaries related to this Address (as an input or output) filtered by a minimum block height.
 
 ``` javascript
 [
@@ -41,6 +43,8 @@ Returns a array of transaction summaries related to this Address (as an input or
 
 
 #### Addresses.Unspents
+
+**Parameters:** Array of addresses
 
 Returns a array of transaction summaries combined with the vout, amount and related address.
 
@@ -63,6 +67,8 @@ Returns a array of transaction summaries combined with the vout, amount and rela
 
 #### Transactions.Summary
 
+**Parameters:** Array of Transaction ids (big-endian transaction hashes)
+
 ``` javascript
 [
 	{
@@ -76,6 +82,8 @@ Returns a array of transaction summaries combined with the vout, amount and rela
 
 
 #### Transactions.Get
+
+**Parameters:** Array of transaction ids (big-endian transaction hashes)
 
 ``` javascript
 [
@@ -98,6 +106,8 @@ No response
 
 #### Blocks.Summary
 
+**Parameters:** Array of block hashs and/or block heights
+
 ``` javascript
 [
 	{
@@ -116,6 +126,8 @@ No response
 
 #### Blocks.Get
 
+**Parameters:** Array of block hashs and/or block heights
+
 ``` javascript
 [
 	"020000003bef0d0b88737698572aa5c78 ... much hex",
@@ -125,6 +137,8 @@ No response
 
 
 #### Blocks.Transactions
+
+**Parameters:** Array of block hashs and/or block heights
 
 Returns a array of transaction summaries for each transaction in the block(s).
 
