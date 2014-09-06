@@ -1,4 +1,5 @@
 var Addresses = require('./addresses')
+var Blocks = require('./blocks')
 var Transactions = require('./transactions')
 
 var NETWORKS = {
@@ -12,6 +13,7 @@ function Helloblock(network) {
 
   // end points
   this.addresses = new Addresses(BASE_URL + 'addresses')
+  this.blocks = new Blocks(BASE_URL + 'blocks')
   this.transactions = new Transactions(BASE_URL + 'transactions')
 }
 
