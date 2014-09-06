@@ -98,7 +98,7 @@ Returns a array of transaction summaries combined with the vout, amount and rela
 **Parameters:** Array of transaction hex strings in the bitcoin protocol format.
 
 ``` javascript
-No response
+No response body
 ```
 
 
@@ -151,6 +151,15 @@ Returns the latest block (subjective to the node)
   blockSize: 456643328,
   txCount: 3
 }
+```
+
+
+#### Blocks.Propagate
+
+**Parameters:** Block hex
+
+``` javascript
+No response body
 ```
 
 
