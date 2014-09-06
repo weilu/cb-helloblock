@@ -5,7 +5,7 @@ function Addresses(url) {
   this.url = url
 }
 
-Addresses.prototype.get = function(addresses, callback) {
+Addresses.prototype.summary = function(addresses, callback) {
   if(!Array.isArray(addresses)) {
     addresses = [addresses]
   }
@@ -26,42 +26,57 @@ Addresses.prototype.get = function(addresses, callback) {
   }, callback))
 }
 
-Addresses.prototype.transactions = function(addresses, offset, callback) {
+Addresses.prototype.transactions = function(addresses, blockHeight, callback) {
   if(!Array.isArray(addresses)) {
     addresses = [addresses]
   }
+  blockHeight = blockHeight || 0
 
   var list = '/transactions?addresses=' + addresses.join('&addresses=')
-  var pagination = '&limit=50' + '&offset=' + offset
-  var query = list + pagination
+
+  // TODO: pagination
+  var query = list + '&limit=100'
 
   request
   .get(this.url + query)
   .end(utils.handleJSend(function(data) {
-    return data.transactions.map(utils.parseHBTransaction)
+    return data.transactions.map(function(tx) {
+      return {
+        txId: tx.txHash,
+        blockHash: tx.blockHash,
+        blockHeight: tx.blockHeight
+      }
+    }).filter(function(txInfo) {
+      return txInfo.blockHeight >= blockHeight
+    })
   }, callback))
 }
 
-Addresses.prototype.unspents = function(addresses, offset, callback) {
+Addresses.prototype.unspents = function(addresses, blockHeight, callback) {
   if(!Array.isArray(addresses)) {
     addresses = [addresses]
   }
+  blockHeight = blockHeight || 0
 
   var list = '/unspents?addresses=' + addresses.join('&addresses=')
-  var pagination = '&limit=50' + '&offset=' + offset
-  var query = list + pagination
+
+  // TODO: pagination
+  var query = list + '&limit=100'
 
   request
   .get(this.url + query)
   .end(utils.handleJSend(function(data) {
     return data.unspents.map(function(unspent) {
       return {
-        address: unspent.address,
-        confirmations: unspent.confirmations,
-        index: unspent.index,
         txId: unspent.txHash,
-        value: unspent.value
+        blockHash: '', // TODO
+        blockHeight: unspent.blockHeight,
+        address: unspent.address,
+        amount: unspent.value,
+        index: unspent.index
       }
+    }).filter(function(unspent) {
+      return unspent.blockHeight >= blockHeight
     })
   }, callback))
 }

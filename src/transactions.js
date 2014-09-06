@@ -5,6 +5,28 @@ function Transactions(url) {
   this.url = url
 }
 
+Transactions.prototype.summary = function(txids, callback) {
+  if(!Array.isArray(txids)) {
+    txids = [txids]
+  }
+
+  var query = '?txHashes=' + txids.join('&txHashes=')
+
+  request
+  .get(this.url + query)
+  .end(utils.handleJSend(function(data) {
+    return {
+      txId: data.txHash,
+      blockHash: data.blockHash,
+      blockHeight: data.blockHeight,
+      nInputs: data.inputsCount,
+      nOutputs: data.outputsCount,
+      totalInputValue: data.totalInputsValue,
+      totalOutputValue: data.totalOutputsValue
+    }
+  }, callback))
+}
+
 Transactions.prototype.get = function(txids, callback) {
   if(!Array.isArray(txids)) {
     txids = [txids]

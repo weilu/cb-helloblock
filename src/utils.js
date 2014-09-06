@@ -55,7 +55,7 @@ function parseHBTransaction(transaction) {
     tx.addOutput(script, txout.value)
   })
 
-  return { hex: tx.toHex(), confirmations: transaction.confirmations }
+  return tx.toHex()
 }
 
 module.exports = {
