@@ -71,12 +71,16 @@ Returns a array of transaction summaries combined with the vout, amount and rela
 
 ``` javascript
 [
-	{
-		txId: "c7736a0a0046d5a8cc61c8c3c2821d4d7517f5de2bc66a966011aaa79965ffba",
-		blockHash: "00000000000000001b701ecd0cf2b7a7742a320e9a06a506227ee345b5735d13",
-		blockHeight: 318573
-	},
-	...
+  {
+    txId: "c7736a0a0046d5a8cc61c8c3c2821d4d7517f5de2bc66a966011aaa79965ffba",
+    blockHash: "00000000000000001b701ecd0cf2b7a7742a320e9a06a506227ee345b5735d13",
+    blockHeight: 318573
+    nInputs: 2,
+    nOutputs: 7,
+    totalInputValue: 130000,
+    totalOutputValue: 100000
+  },
+  ...
 ]
 ```
 
