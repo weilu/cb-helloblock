@@ -15,10 +15,10 @@ describe('Blockchain API', function() {
   })
 
   describe('Addresses', function() {
-    describe('Get', function() {
+    describe('Summary', function() {
       fixtures.addresses.forEach(function(f) {
-        it('returns summary for ' + f + ' correctly', function(done) {
-          blockchain.addresses.get(f, function(err, results) {
+        it('returns for ' + f + ' correctly', function(done) {
+          blockchain.addresses.summary(f, function(err, results) {
             assert.ifError(err)
 
             results.forEach(function(result) {
@@ -33,12 +33,13 @@ describe('Blockchain API', function() {
         })
       })
 
-      it('works when there are many addresses', function(done) {
-        var addresses = fixtures.addresses.concat(fixtures.more_addresses).concat(fixtures.even_more_addresses)
-        blockchain.addresses.get(addresses, function(err, results) {
-          assert.ifError(err)
+      it('works for n > 20 addresses', function(done) {
+        var addresses = fixtures.addresses.concat(fixtures.moreAddresses).concat(fixtures.evenMoreAddresses)
 
+        blockchain.addresses.summary(addresses, function(err, results) {
+          assert.ifError(err)
           assert.equal(results.length, addresses.length)
+
           done()
         })
       })
@@ -50,9 +51,11 @@ describe('Blockchain API', function() {
           assert.ifError(err)
 
           results.forEach(function(result) {
-            assert(result.hex.match(/^[0-9a-f]+$/i))
-            assert(result.hex.length >= 20)
-            assert.equal(typeof result.confirmations, 'number')
+            assert(result.txId.match(/^[0-9a-f]+$/i))
+            assert(result.blockHash.match(/^[0-9a-f]+$/i))
+            assert.equal(result.txId.length, 64)
+            assert.equal(result.blockHash.length, 64)
+            assert(result.blockHeight > 0)
           })
 
           done()
@@ -60,23 +63,28 @@ describe('Blockchain API', function() {
       })
 
       it('returns expected transactions', function(done) {
-        var hexs = fixtures.transactions.map(function(f) { return f.hex })
+        var txIds = fixtures.transactions.map(function(f) { return f.txid })
 
         blockchain.addresses.transactions(fixtures.addresses, 0, function(err, results) {
           assert.ifError(err)
 
-          var actualHexs = results.map(function(tx) { return tx.hex })
-          hexs.forEach(function(hex) {
-            assert.notEqual(actualHexs.indexOf(hex), -1, hex + ' not found')
+          txIds.forEach(function(txid) {
+            assert(results.some(function(result) {
+              return result.txId === txid
+            }))
           })
 
           done()
         })
       })
 
-      it('works when there are many transactions', function(done) {
-        blockchain.addresses.transactions(fixtures.addresses.concat(fixtures.more_addresses).concat(fixtures.even_more_addresses), 0, function(err, results) {
+      it('works when there n > 20 transactions', function(done) {
+        blockchain.addresses.transactions(fixtures.addresses.concat(fixtures.moreAddresses).concat(fixtures.evenMoreAddresses), 0, function(err, results) {
           assert.ifError(err)
+
+          // TODO: verify
+          assert(results.length > 20)
+
           done()
         })
       })
@@ -86,7 +94,8 @@ describe('Blockchain API', function() {
           assert.ifError(err)
 
           var address = addresses[0]
-          var tx = txs[0]
+          var tx = bitcoinjs.Transaction.fromHex(txs[0])
+          var txid = tx.getId()
 
           blockchain.transactions.propagate(tx, function(err) {
             assert.ifError(err)
@@ -94,9 +103,9 @@ describe('Blockchain API', function() {
             blockchain.addresses.transactions(address, 0, function(err, results) {
               assert.ifError(err)
 
-              var txid = bitcoinjs.Transaction.fromHex(tx).getId()
-              var actualHexs = results.map(function(tx) { return tx.hex })
-              assert(actualHexs.indexOf(tx) > -1, "expect `addresses.transactions('" + address + "')` to include zero-confirmation transaction with id " + txid)
+              assert(results.some(function(result) {
+                return result.txId === txid
+              }))
 
               done()
             })
@@ -111,13 +120,17 @@ describe('Blockchain API', function() {
           assert.ifError(err)
 
           results.forEach(function(result) {
-            assert(result.confirmations > 0)
-            assert(result.index >= 0)
-            assert(result.txId.length === 64)
-            assert(result.value > 0)
+            assert(result.txId.match(/^[0-9a-f]+$/i))
+            assert(result.blockHash.match(/^[0-9a-f]+$/i))
+            assert.equal(result.txId.length, 64)
+            assert.equal(result.blockHash.length, 64)
+            assert(result.blockHeight > 0)
+
             assert.doesNotThrow(function() {
               bitcoinjs.Address.fromBase58Check(result.address)
             })
+            assert(result.amount > 0)
+            assert(result.vout >= 0)
           })
 
           done()
@@ -125,24 +138,25 @@ describe('Blockchain API', function() {
       })
 
       it('returns expected transactions', function(done) {
-        var txids = fixtures.transactions.map(function(f) { return f.txid })
+        var txIds = fixtures.transactions.map(function(f) { return f.txid })
 
         blockchain.addresses.unspents(fixtures.addresses, 0, function(err, results) {
           assert.ifError(err)
 
-          var resultTxids = results.map(function(result) { return result.txId })
+          var resulttxIds = results.map(function(result) { return result.txId })
 
-          txids.forEach(function(txid) {
-            assert.notEqual(resultTxids.indexOf(txid), -1, txid + ' not found')
+          txIds.forEach(function(txId) {
+            assert.notEqual(resulttxIds.indexOf(txId), -1, txId + ' not found')
           })
 
           done()
         })
       })
 
-      it('works when there are many addresses', function(done) {
-        var addresses = fixtures.addresses.concat(fixtures.more_addresses).concat(fixtures.even_more_addresses)
-        blockchain.addresses.unspents(addresses, 0, function(err, results) {
+      it('works for n > 20 addresses', function(done) {
+        var addresses = fixtures.addresses.concat(fixtures.moreAddresses).concat(fixtures.evenMoreAddresses)
+
+        blockchain.addresses.unspents(addresses, 0, function(err) {
           assert.ifError(err)
           done()
         })
@@ -151,15 +165,68 @@ describe('Blockchain API', function() {
   })
 
   describe('Transactions', function() {
+    describe('Summary', function() {
+      function verify(f, result) {
+        assert(result.txId.match(/^[0-9a-f]+$/i))
+        assert(result.blockHash.match(/^[0-9a-f]+$/i))
+        assert.equal(result.txId.length, 64)
+        assert.equal(result.blockHash.length, 64)
+        assert(result.blockHeight > 0)
+
+        assert.equal(result.nInputs, f.nInputs)
+        assert.equal(result.nOutputs, f.nOutputs)
+        assert.equal(result.totalInputValue, f.totalInputValue)
+        assert.equal(result.totalOutputValue, f.totalOutputValue)
+      }
+
+      fixtures.transactions.forEach(function(f) {
+        it('returns a summary for ' + f.txid + ' correctly', function(done) {
+          blockchain.transactions.summary(f.txid, function(err, results) {
+            assert.ifError(err)
+
+            var txreal = bitcoinjs.Transaction.fromHex(f.hex)
+            f.nInputs = txreal.ins.length
+            f.nOutputs = txreal.out.length
+            f.totalOutputValue = txreal.outs.reduce(function(a, x) { return a + x.value })
+
+            results.forEach(function(result) {
+              f.totalInputValue = result.totalInputValue
+
+              verify(f, result)
+            })
+
+            require('fs').writeFileSync('./test/fixture.json', JSON.stringify(fixtures, null, 2))
+
+            done()
+          })
+        })
+      })
+
+      it('works for n > 1 transactions', function(done) {
+        var txIds = fixtures.transactions.map(function(f) { return f.txid })
+
+        blockchain.transactions.summary(txIds, function(err, results) {
+          assert.ifError(err)
+
+          var resultTxIds = results.map(function(result) { return result.txId })
+
+          fixtures.transactions.forEach(function(f) {
+            verify(f, resultTxIds.indexOf(f.txid))
+          })
+
+          done()
+        })
+      })
+    })
+
     describe('Get', function() {
       fixtures.transactions.forEach(function(f) {
-        it('returns and parses ' + f.txid + ' correctly', function(done) {
+        it('returns the hex for ' + f.txid + ' correctly', function(done) {
           blockchain.transactions.get(f.txid, function(err, results) {
             assert.ifError(err)
 
             results.forEach(function(result) {
-              assert.equal(result.hex, f.hex)
-              assert.equal(typeof result.confirmations, 'number')
+              assert.equal(result, f.hex)
             })
 
             done()
@@ -167,17 +234,16 @@ describe('Blockchain API', function() {
         })
       })
 
-      it('supports n > 1 batch sizes', function(done) {
-        var txids = fixtures.transactions.map(function(f) { return f.txid })
+      it('works for n > 1 transactions', function(done) {
+        var txIds = fixtures.transactions.map(function(f) { return f.txid })
+        var txHexs = fixtures.transactions.map(function(f) { return f.hex })
 
-        blockchain.transactions.get(txids, function(err, results) {
+        blockchain.transactions.get(txIds, function(err, results) {
           assert.ifError(err)
 
           assert.equal(results.length, fixtures.transactions.length)
-
-          var actualHexs = results.map(function(tx) { return tx.hex })
-          fixtures.transactions.forEach(function(expected) {
-            assert.notEqual(actualHexs.indexOf(expected.hex), -1, expected.hex + ' not found')
+          txHexs.forEach(function(hex) {
+            assert.notEqual(results.indexOf(hex), -1)
           })
 
           done()
@@ -198,7 +264,7 @@ describe('Blockchain API', function() {
         })
       })
 
-      it('supports n > 1 batch sizes', function(done) {
+      it('works for n > 1 transactions', function(done) {
         requestNewUnspents(3, function(err, txs) {
           assert.ifError(err)
 

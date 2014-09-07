@@ -73,7 +73,7 @@ Addresses.prototype.unspents = function(addresses, blockHeight, callback) {
         blockHeight: unspent.blockHeight,
         address: unspent.address,
         amount: unspent.value,
-        index: unspent.index
+        vout: unspent.index
       }
     }).filter(function(unspent) {
       return unspent.blockHeight >= blockHeight

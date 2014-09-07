@@ -8,7 +8,7 @@ function handleJSend(handle, callback) {
 
     var result
     try {
-      assert(jsend.isValid(res.body))
+      assert(jsend.isValid(res.body), 'Invalid JSend Response')
 
       result = handle(res.body.data)
     } catch (exception) {
