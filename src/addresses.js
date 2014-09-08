@@ -46,8 +46,8 @@ Addresses.prototype.transactions = function(addresses, blockHeight, callback) {
         blockHash: tx.blockHash,
         blockHeight: tx.blockHeight
       }
-    }).filter(function(txInfo) {
-      return txInfo.blockHeight >= blockHeight
+    }).filter(function(tx) {
+      return tx.blockHeight >= blockHeight
     })
   }, callback))
 }
