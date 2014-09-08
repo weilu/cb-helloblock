@@ -15,15 +15,17 @@ Transactions.prototype.summary = function(txids, callback) {
   request
   .get(this.url + query)
   .end(utils.handleJSend(function(data) {
-    return {
-      txId: data.txHash,
-      blockHash: data.blockHash,
-      blockHeight: data.blockHeight,
-      nInputs: data.inputsCount,
-      nOutputs: data.outputsCount,
-      totalInputValue: data.totalInputsValue,
-      totalOutputValue: data.totalOutputsValue
-    }
+    return data.transactions.map(function(tx) {
+      return {
+        txId: tx.txHash,
+        blockHash: tx.blockHash,
+        blockHeight: tx.blockHeight,
+        nInputs: tx.inputsCount,
+        nOutputs: tx.outputsCount,
+        totalInputValue: tx.totalInputsValue,
+        totalOutputValue: tx.totalOutputsValue
+      }
+    })
   }, callback))
 }
 
