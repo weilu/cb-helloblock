@@ -6,8 +6,7 @@
   "scripts": {
     "coverage": "istanbul cover _mocha -- test/*.js",
     "jshint": "jshint --config jshint.json src/*.js ; true",
-    "test": "npm run-script unit",
-    "unit": "istanbul test mocha -- --reporter list test/*.js"
+    "test": "istanbul test mocha -- --reporter list test/*.js"
   },
   "repository": {
     "type": "git",
