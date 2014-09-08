@@ -66,7 +66,9 @@ Addresses.prototype.unspents = function(addresses, blockHeight, callback) {
   request
   .get(this.url + query)
   .end(utils.handleJSend(function(data) {
-    return data.unspents.map(function(unspent) {
+    return data.unspents.filter(function(unspent) {
+      return unspent.type === 'pubkeyhash'
+    }).map(function(unspent) {
       return {
         txId: unspent.txHash,
         blockHash: '', // TODO
