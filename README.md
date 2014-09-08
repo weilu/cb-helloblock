@@ -1,5 +1,9 @@
 # cb-helloblock
 
+[![build status](https://secure.travis-ci.org/dcousens/cb-helloblock.png)](http://travis-ci.org/dcousens/cb-helloblock)
+[![Coverage Status](https://img.shields.io/coveralls/dcousens/cb-helloblock.svg)](https://coveralls.io/r/dcousens/cb-helloblock)
+[![Version](http://img.shields.io/npm/v/cb-helloblock.svg)](https://www.npmjs.org/package/cb-helloblock)
+
 Common blockchain wrapper for helloblock.io
 
 
