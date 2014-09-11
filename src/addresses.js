@@ -30,7 +30,12 @@ Addresses.prototype.transactions = function(addresses, blockHeight, callback) {
   if(!Array.isArray(addresses)) {
     addresses = [addresses]
   }
-  blockHeight = blockHeight || 0
+
+  // optional blockHeight
+  if ('function' === typeof blockHeight) {
+    callback = blockHeight
+    blockHeight = 0
+  }
 
   var list = '/transactions?addresses=' + addresses.join('&addresses=')
 
@@ -56,7 +61,12 @@ Addresses.prototype.unspents = function(addresses, blockHeight, callback) {
   if(!Array.isArray(addresses)) {
     addresses = [addresses]
   }
-  blockHeight = blockHeight || 0
+
+  // optional blockHeight
+  if ('function' === typeof blockHeight) {
+    callback = blockHeight
+    blockHeight = 0
+  }
 
   var list = '/unspents?addresses=' + addresses.join('&addresses=')
 
