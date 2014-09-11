@@ -115,7 +115,7 @@ describe('Addresses', function() {
 
   describe('Unspents', function() {
     it('returns sane results', function(done) {
-      blockchain.addresses.unspents(fixtures.addresses[0], 0, function(err, results) {
+      blockchain.addresses.unspents(fixtures.addresses[0], function(err, results) {
         assert.ifError(err)
 
         results.forEach(function(result) {
@@ -139,7 +139,7 @@ describe('Addresses', function() {
     it('returns expected transactions', function(done) {
       var txIds = fixtures.transactions.map(function(f) { return f.txid })
 
-      blockchain.addresses.unspents(fixtures.addresses, 0, function(err, results) {
+      blockchain.addresses.unspents(fixtures.addresses, function(err, results) {
         assert.ifError(err)
 
         var resulttxIds = results.map(function(result) { return result.txId })
@@ -155,7 +155,8 @@ describe('Addresses', function() {
     it('works for n > 20 addresses', function(done) {
       var addresses = fixtures.addresses.concat(fixtures.moreAddresses).concat(fixtures.evenMoreAddresses)
 
-      blockchain.addresses.unspents(addresses, 0, function(err) {
+      // TODO: properly test optional blockHeight
+      blockchain.addresses.unspents(addresses, 1, function(err) {
         assert.ifError(err)
         done()
       })
