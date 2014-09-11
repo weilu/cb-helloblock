@@ -19,8 +19,8 @@ Common blockchain wrapper for helloblock.io
 [
   {
     address: "mpNDUWcDcZw1Teo3LFHvr8usNdwDLKdTaY",
-    balance: 1.000,
-    totalReceived: 43.000,
+    balance: 100000,
+    totalReceived: 430000,
     txCount: 3
   },
   ...
@@ -59,7 +59,7 @@ Returns a array of transaction summaries combined with the vout, amount and rela
     blockHash: "00000000000000001b701ecd0cf2b7a7742a320e9a06a506227ee345b5735d13",
     blockHeight: 318573,
     address: "mpNDUWcDcZw1Teo3LFHvr8usNdwDLKdTaY",
-    amount: 1.000,
+    amount: 430000,
     vout: 0,
   },
   ...
