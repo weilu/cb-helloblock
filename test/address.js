@@ -77,7 +77,7 @@ describe('Addresses', function() {
       })
     })
 
-    it('works when there n > 20 transactions', function(done) {
+    it('works for n > 20 transactions', function(done) {
       blockchain.addresses.transactions(fixtures.addresses.concat(fixtures.moreAddresses).concat(fixtures.evenMoreAddresses), 0, function(err, results) {
         assert.ifError(err)
 
