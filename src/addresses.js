@@ -57,15 +57,9 @@ Addresses.prototype.transactions = function(addresses, blockHeight, callback) {
   }, callback))
 }
 
-Addresses.prototype.unspents = function(addresses, blockHeight, callback) {
+Addresses.prototype.unspents = function(addresses, callback) {
   if(!Array.isArray(addresses)) {
     addresses = [addresses]
-  }
-
-  // optional blockHeight
-  if ('function' === typeof blockHeight) {
-    callback = blockHeight
-    blockHeight = 0
   }
 
   var list = '/unspents?addresses=' + addresses.join('&addresses=')
@@ -87,8 +81,6 @@ Addresses.prototype.unspents = function(addresses, blockHeight, callback) {
         amount: unspent.value,
         vout: unspent.index
       }
-    }).filter(function(unspent) {
-      return unspent.blockHeight >= blockHeight
     })
   }, callback))
 }

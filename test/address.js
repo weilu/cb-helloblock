@@ -120,10 +120,16 @@ describe('Addresses', function() {
 
         results.forEach(function(result) {
           assert(result.txId.match(/^[0-9a-f]+$/i))
-//          assert(result.blockHash.match(/^[0-9a-f]+$/i)) // TODO
           assert.equal(result.txId.length, 64)
-//          assert.equal(result.blockHash.length, 64) // TODO
-          assert(result.blockHeight > 0)
+
+          if (result.blockHash) {
+            assert(result.blockHash.match(/^[0-9a-f]+$/i))
+            assert.equal(result.blockHash.length, 64)
+            assert(result.blockHeight > 0)
+
+          } else {
+//            assert(result.blockHeight === null) // TODO
+          }
 
           assert.doesNotThrow(function() {
             bitcoinjs.Address.fromBase58Check(result.address)
@@ -155,9 +161,9 @@ describe('Addresses', function() {
     it('works for n > 20 addresses', function(done) {
       var addresses = fixtures.addresses.concat(fixtures.moreAddresses).concat(fixtures.evenMoreAddresses)
 
-      // TODO: properly test optional blockHeight
-      blockchain.addresses.unspents(addresses, 1, function(err) {
+      blockchain.addresses.unspents(addresses, function(err) {
         assert.ifError(err)
+
         done()
       })
     })
