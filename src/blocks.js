@@ -23,8 +23,6 @@ Blocks.prototype.latest = function(count, callback) {
 
   var query = '/latest?=' + ('&limit=' + (count || 1))
 
-  console.log(this.url + query)
-
   request
   .get(this.url + query)
   .end(utils.handleJSend(function(data) {
