@@ -127,14 +127,14 @@ describe('Addresses', function() {
             assert.equal(result.blockHash.length, 64)
             assert(result.blockHeight > 0)
 
-          } else {
+//          } else {
 //            assert(result.blockHeight === null) // TODO
           }
 
           assert.doesNotThrow(function() {
             bitcoinjs.Address.fromBase58Check(result.address)
           })
-          assert(result.amount > 0)
+          assert(result.value > 0)
           assert(result.vout >= 0)
         })
 

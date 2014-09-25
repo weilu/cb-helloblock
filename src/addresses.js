@@ -78,7 +78,7 @@ Addresses.prototype.unspents = function(addresses, callback) {
         blockHash: null, // TODO
         blockHeight: unspent.blockHeight,
         address: unspent.address,
-        amount: unspent.value,
+        value: unspent.value,
         vout: unspent.index
       }
     })

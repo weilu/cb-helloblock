@@ -50,7 +50,7 @@ Returns a array of transaction summaries related to this Address (as an input or
 
 **Parameters:** Array of addresses
 
-Returns a array of transaction summaries combined with the vout, amount and related address.
+Returns a array of transaction summaries combined with the vout, value and related address.
 
 ``` javascript
 [
@@ -59,7 +59,7 @@ Returns a array of transaction summaries combined with the vout, amount and rela
     blockHash: "00000000000000001b701ecd0cf2b7a7742a320e9a06a506227ee345b5735d13",
     blockHeight: 318573,
     address: "mpNDUWcDcZw1Teo3LFHvr8usNdwDLKdTaY",
-    amount: 430000,
+    value: 430000,
     vout: 0,
   },
   ...
