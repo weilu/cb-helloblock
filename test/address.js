@@ -51,6 +51,7 @@ describe('Addresses', function() {
 
         results.forEach(function(result) {
           assert(result.txId.match(/^[0-9a-f]+$/i))
+          assert(result.txHex.match(/^[0-9a-f]+$/i))
           assert(result.blockHash.match(/^[0-9a-f]+$/i))
           assert.equal(result.txId.length, 64)
           assert.equal(result.blockHash.length, 64)
@@ -62,14 +63,12 @@ describe('Addresses', function() {
     })
 
     it('returns expected transactions', function(done) {
-      var txIds = fixtures.transactions.map(function(f) { return f.txid })
-
       blockchain.addresses.transactions(fixtures.addresses, 0, function(err, results) {
         assert.ifError(err)
 
-        txIds.forEach(function(txid) {
+        fixtures.transactions.forEach(function(f) {
           assert(results.some(function(result) {
-            return result.txId === txid
+            return (result.txId === f.txId) && (result.txHex === f.txHex)
           }))
         })
 
@@ -143,21 +142,20 @@ describe('Addresses', function() {
     })
 
     it('returns expected transactions', function(done) {
-      var txIds = fixtures.transactions.map(function(f) { return f.txid })
-
       blockchain.addresses.unspents(fixtures.addresses, function(err, results) {
         assert.ifError(err)
 
-        var resulttxIds = results.map(function(result) { return result.txId })
-
-        txIds.forEach(function(txId) {
-          assert.notEqual(resulttxIds.indexOf(txId), -1, txId + ' not found')
+        fixtures.transactions.forEach(function(f) {
+          assert(results.some(function(result) {
+            return (result.txId === f.txId)
+          }))
         })
 
         done()
       })
     })
 
+    // TODO: improve
     it('works for n > 20 addresses', function(done) {
       var addresses = fixtures.addresses.concat(fixtures.moreAddresses).concat(fixtures.evenMoreAddresses)
 

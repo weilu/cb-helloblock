@@ -39,7 +39,14 @@ Transactions.prototype.get = function(txids, callback) {
   request
   .get(this.url + query)
   .end(utils.handleJSend(function(data) {
-    return data.transactions.map(utils.parseHBTransaction)
+    return data.transactions.map(function(tx) {
+      return {
+        txId: tx.txHash,
+        txHex: utils.parseHBTransaction(tx),
+        blockHash: tx.blockHash,
+        blockHeight: tx.blockHeight
+      }
+    })
   }, callback))
 }
 

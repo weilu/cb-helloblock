@@ -16,12 +16,9 @@ describe('Transactions', function() {
 
   describe('Summary', function() {
     function verify(f, result) {
-      assert(result.txId.match(/^[0-9a-f]+$/i))
-      assert(result.blockHash.match(/^[0-9a-f]+$/i))
-      assert.equal(result.txId.length, 64)
-      assert.equal(result.blockHash.length, 64)
-      assert(result.blockHeight > 0)
-
+      assert.equal(result.txId, f.txId)
+      assert.equal(result.blockHash, f.blockHash)
+      assert.equal(result.blockHeight, f.blockHeight)
       assert.equal(result.nInputs, f.nInputs)
       assert.equal(result.nOutputs, f.nOutputs)
       assert.equal(result.totalInputValue, f.totalInputValue)
@@ -29,8 +26,8 @@ describe('Transactions', function() {
     }
 
     fixtures.transactions.forEach(function(f) {
-      it('returns a summary for ' + f.txid + ' correctly', function(done) {
-        blockchain.transactions.summary(f.txid, function(err, results) {
+      it('returns a summary for ' + f.txId + ' correctly', function(done) {
+        blockchain.transactions.summary(f.txId, function(err, results) {
           assert.ifError(err)
 
           results.forEach(function(result) {
@@ -43,15 +40,15 @@ describe('Transactions', function() {
     })
 
     it('works for n > 1 transactions', function(done) {
-      var txIds = fixtures.transactions.map(function(f) { return f.txid })
+      var txIds = fixtures.transactions.map(function(f) { return f.txId })
 
       blockchain.transactions.summary(txIds, function(err, results) {
         assert.ifError(err)
 
-        var resultTxIds = results.map(function(result) { return result.txId })
+        var resulttxIds = results.map(function(result) { return result.txId })
 
         fixtures.transactions.forEach(function(f) {
-          var i = resultTxIds.indexOf(f.txid)
+          var i = resulttxIds.indexOf(f.txId)
 
           verify(f, results[i])
         })
@@ -63,12 +60,15 @@ describe('Transactions', function() {
 
   describe('Get', function() {
     fixtures.transactions.forEach(function(f) {
-      it('returns the hex for ' + f.txid + ' correctly', function(done) {
-        blockchain.transactions.get(f.txid, function(err, results) {
+      it('returns the transaction for ' + f.txId + ' correctly', function(done) {
+        blockchain.transactions.get(f.txId, function(err, results) {
           assert.ifError(err)
 
           results.forEach(function(result) {
-            assert.equal(result, f.hex)
+            assert.equal(result.txId, f.txId)
+            assert.equal(result.blockHash, f.blockHash)
+            assert.equal(result.blockHeight, f.blockHeight)
+            assert.equal(result.txHex, f.txHex)
           })
 
           done()
@@ -77,15 +77,17 @@ describe('Transactions', function() {
     })
 
     it('works for n > 1 transactions', function(done) {
-      var txIds = fixtures.transactions.map(function(f) { return f.txid })
-      var txHexs = fixtures.transactions.map(function(f) { return f.hex })
+      var txIds = fixtures.transactions.map(function(f) { return f.txId })
 
       blockchain.transactions.get(txIds, function(err, results) {
         assert.ifError(err)
 
         assert.equal(results.length, fixtures.transactions.length)
-        txHexs.forEach(function(hex) {
-          assert.notEqual(results.indexOf(hex), -1)
+
+        fixtures.transactions.forEach(function(f) {
+          assert(results.some(function(result) {
+            return (result.txId === f.txId) && (result.txHex === f.txHex)
+          }))
         })
 
         done()

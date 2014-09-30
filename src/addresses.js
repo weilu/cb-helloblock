@@ -48,6 +48,7 @@ Addresses.prototype.transactions = function(addresses, blockHeight, callback) {
     return data.transactions.map(function(tx) {
       return {
         txId: tx.txHash,
+        txHex: utils.parseHBTransaction(tx),
         blockHash: tx.blockHash,
         blockHeight: tx.blockHeight
       }
