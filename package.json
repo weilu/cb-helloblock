@@ -5,7 +5,6 @@
   "main": "./src/index.js",
   "scripts": {
     "coverage": "istanbul cover _mocha -- test/*.js",
-    "jshint": "jshint --config jshint.json src/*.js ; true",
     "test": "istanbul test mocha -- --reporter list test/*.js"
   },
   "repository": {
@@ -20,7 +19,6 @@
   "homepage": "https://github.com/dcousens/cb-helloblock",
   "devDependencies": {
     "istanbul": "0.1.30",
-    "jshint": "2.5.1",
     "mocha": "1.18.2"
   },
   "dependencies": {
