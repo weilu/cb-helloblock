@@ -5,6 +5,37 @@ var request = require('superagent')
 
 var Blockchain = require('../src/index.js')
 
+
+function requestNewUnspents(amount, callback) {
+  assert(amount > 0, 'Minimum amount is 1')
+  assert(amount <= 3, 'Maximum amount is 3')
+  amount = Math.round(amount)
+
+  request
+  .get('https://testnet.helloblock.io/v1/faucet?type=' + amount)
+  .end(function(err, res) {
+    if (err) return callback(err)
+
+    var privKey = bitcoinjs.ECKey.fromWIF(res.body.data.privateKeyWIF)
+    var txs = res.body.data.unspents.map(function(utxo) {
+      var tx = new bitcoinjs.TransactionBuilder()
+      tx.addInput(utxo.txHash, utxo.index)
+      tx.addOutput(utxo.address, utxo.value)
+      tx.sign(0, privKey)
+
+      return tx.build().toHex()
+    })
+
+    var addresses = res.body.data.unspents.map(function(utxo) {
+      return utxo.address
+    })
+
+    if (txs.length !== amount) return callback(new Error('txs.length !== amount'))
+
+    callback(undefined, txs, addresses)
+  })
+}
+
 describe('Transactions', function() {
   this.timeout(20000)
 
@@ -121,33 +152,3 @@ describe('Transactions', function() {
     })
   })
 })
-
-function requestNewUnspents(amount, callback) {
-  assert(amount > 0, 'Minimum amount is 1')
-  assert(amount <= 3, 'Maximum amount is 3')
-  amount = Math.round(amount)
-
-  request
-  .get('https://testnet.helloblock.io/v1/faucet?type=' + amount)
-  .end(function(err, res) {
-    if (err) return callback(err)
-
-    var privKey = bitcoinjs.ECKey.fromWIF(res.body.data.privateKeyWIF)
-    var txs = res.body.data.unspents.map(function(utxo) {
-      var tx = new bitcoinjs.Transaction()
-      tx.addInput(utxo.txHash, utxo.index)
-      tx.addOutput(utxo.address, utxo.value)
-      tx.sign(0, privKey)
-
-      return tx.toHex()
-    })
-
-    var addresses = res.body.data.unspents.map(function(utxo) {
-      return utxo.address
-    })
-
-    if (txs.length !== amount) return callback(new Error('txs.length !== amount'))
-
-    callback(undefined, txs, addresses)
-  })
-}
