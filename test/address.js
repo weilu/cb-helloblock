@@ -121,20 +121,12 @@ describe('Addresses', function() {
           assert(result.txId.match(/^[0-9a-f]+$/i))
           assert.equal(result.txId.length, 64)
 
-          if (result.blockHash) {
-            assert(result.blockHash.match(/^[0-9a-f]+$/i))
-            assert.equal(result.blockHash.length, 64)
-            assert(result.blockHeight > 0)
-
-//          } else {
-//            assert(result.blockHeight === null) // TODO
-          }
-
           assert.doesNotThrow(function() {
             bitcoinjs.Address.fromBase58Check(result.address)
           })
-          assert(result.value > 0)
-          assert(result.vout >= 0)
+          assert(isFinite(result.confirmations))
+          assert(isFinite(result.value))
+          assert(isFinite(result.vout))
         })
 
         done()

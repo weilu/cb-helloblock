@@ -76,9 +76,8 @@ Addresses.prototype.unspents = function(addresses, callback) {
     }).map(function(unspent) {
       return {
         txId: unspent.txHash,
-        blockHash: null, // TODO
-        blockHeight: unspent.blockHeight,
         address: unspent.address,
+        confirmations: unspent.confirmations,
         value: unspent.value,
         vout: unspent.index
       }

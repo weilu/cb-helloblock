@@ -57,8 +57,7 @@ Returns a array of transaction summaries combined with the vout, value and relat
 [
   {
     txId: "c7736a0a0046d5a8cc61c8c3c2821d4d7517f5de2bc66a966011aaa79965ffba",
-    blockHash: "00000000000000001b701ecd0cf2b7a7742a320e9a06a506227ee345b5735d13",
-    blockHeight: 318573,
+    confirmations: 6,
     address: "mpNDUWcDcZw1Teo3LFHvr8usNdwDLKdTaY",
     value: 430000,
     vout: 0,
