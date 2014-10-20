@@ -14,30 +14,23 @@ Blocks.prototype.get = function(params, callback) {
   assert(false, 'TODO')
 }
 
-Blocks.prototype.latest = function(count, callback) {
-  // optional count
-  if ('function' === typeof count) {
-    callback = count
-    count = 1
-  }
-
-  var query = '/latest?=' + ('&limit=' + (count || 1))
+Blocks.prototype.latest = function(callback) {
+  var query = '/latest?limit=1'
 
   request
   .get(this.url + query)
   .end(utils.handleJSend(function(data) {
-    return data.blocks.map(function(block) {
-      return {
-        blockHash: block.blockHash,
-        merkleRootHash: block.merkleRootHash,
-        prevBlockHash: block.prevBlockHash,
-        nonce: block.nonce,
-        blockHeight: block.blockHeight,
-        blockTime: block.blockTime,
-        blockSize: block.bits,
-        txCount: block.txsCount
-      }
-    })
+    var block = data.blocks[0]
+    return {
+      blockHash: block.blockHash,
+      merkleRootHash: block.merkleRootHash,
+      prevBlockHash: block.prevBlockHash,
+      nonce: block.nonce,
+      blockHeight: block.blockHeight,
+      blockTime: block.blockTime,
+      blockSize: block.bits,
+      txCount: block.txsCount
+    }
   }, callback))
 }
 
